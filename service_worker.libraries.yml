@@ -9,8 +9,3 @@ a2hs:
       css/a2hs.css: {}
   js:
     js/a2hs.js: {}
-#dependencies:
-  #- service_worker/workbox
-
-  #dependencies:
-    #- core/jquery

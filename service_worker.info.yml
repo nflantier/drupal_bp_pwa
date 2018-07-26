@@ -1,5 +1,5 @@
 name: Service worker
-description: Add a service worker service
+description: Add a service worker and PWA functionalities
 package: Custom
 type: module
 version: 1.0
