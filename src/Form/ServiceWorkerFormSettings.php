@@ -36,19 +36,19 @@ class ServiceWorkerFormSettings extends ConfigFormBase {
 
     $form['filename'] = array(
         '#type' => 'textfield',
-        '#title' => $this->t('FileName of the service worker'),
+        '#title' => $this->t('FileName of the service worker (whitout extension)'),
         '#default_value' => $filename,
     );
 
     $form['manifestfilename'] = array(
         '#type' => 'textfield',
-        '#title' => $this->t('FileName of the manifest'),
+        '#title' => $this->t('FileName of the manifest (whitout extension)'),
         '#default_value' => $manifestfilename,
     );
 
     $form['themecolor'] = array(
         '#type' => 'textfield',
-        '#title' => $this->t('Color of the theme'),
+        '#title' => $this->t("Theme's color"),
         '#default_value' => $themecolor,
     );
 
