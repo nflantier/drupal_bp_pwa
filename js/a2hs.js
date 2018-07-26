@@ -9,6 +9,7 @@ if (navigator && 'serviceWorker' in navigator) {
                 btn.classList.add("show-pwa");
                 btn.onclick = () => e.prompt();
             })
+            
             /*e.preventDefault();
             deferredPrompt = e;
             deferredPrompt.prompt();
