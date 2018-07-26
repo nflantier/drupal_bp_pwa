@@ -1,0 +1,7 @@
+service_worker.swsettings:
+  path: '/admin/config/swsettings'
+  defaults:
+    _form: '\Drupal\service_worker\Form\ServiceWorkerFormSettings'
+    _title: 'SW settings'
+  requirements:
+    _permission: 'administer site configuration'

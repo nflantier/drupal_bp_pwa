@@ -1,0 +1,28 @@
+.a2hs{
+    /*display: none;*/
+    /*color:#000;*/
+}
+.a2hs::before{
+    content:'+';
+    font-size: 4rem;
+    line-height: 2rem;
+}
+.a2hs.show-pwa{
+    /*display: flex;
+    flex-direction: column;
+    align-items: center;*/
+}
+@media all and (display-mode: standalone) {
+    .a2hs{
+        display: none !important;
+    }
+    .a2hs.show-pwa{
+        display: none !important;
+    }
+}
+/*
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px*/

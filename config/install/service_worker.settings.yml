@@ -1,0 +1,4 @@
+service_worker:
+  filename: 'sw'
+  manifestfilename: 'manifest'
+  themecolor: '#ffffff'

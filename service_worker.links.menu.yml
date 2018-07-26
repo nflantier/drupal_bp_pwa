@@ -1,0 +1,6 @@
+service_worker.settings:
+  title: 'SW settings'
+  description: 'SW settings'
+  parent: system.admin_config_development
+  route_name: service_worker.swsettings
+  weight: 100

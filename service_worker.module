@@ -1,0 +1,38 @@
+<?php
+
+function service_worker_preprocess_html(&$variables) {
+  $variables['#attached']['drupalSettings']['service_worker']['filename']  = \Drupal::config('service_worker.settings')->get('filename');
+  $variables['#attached']['library'][] = 'service_worker/register-sw';
+  $variables['#attached']['library'][] = 'service_worker/a2hs';
+  $variables['#attached']['html_head'][] = [
+      array(
+      '#tag' => 'link',
+      '#attributes' => array(
+        'rel' => 'manifest',
+        'href' => '/'.\Drupal::config('service_worker.settings')->get('manifestfilename').'.webmanifest',
+      ),
+    ),
+  'manifest'];
+  $variables['#attached']['html_head'][] = [
+      array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'theme-color',
+        'content' => \Drupal::config('service_worker.settings')->get('themecolor'),
+      ),
+    ),
+  'theme-color'];
+}
+
+function service_worker_theme(){
+  return array(
+    'a2hs' => array(
+      'variables' => array(),
+      'template' => 'a2hs',
+    ),
+  );
+}
+
+function template_preprocess_a2hs(&$variables) {
+  $variables['attributes']['title'] = 'Installez le site sur votre bureau';
+}

@@ -1,0 +1,16 @@
+register-sw:
+  js:
+    js/register-sw.js: {}
+  dependencies:
+    - core/drupalSettings
+a2hs:
+  css:
+    theme:
+      css/a2hs.css: {}
+  js:
+    js/a2hs.js: {}
+#dependencies:
+  #- service_worker/workbox
+
+  #dependencies:
+    #- core/jquery
