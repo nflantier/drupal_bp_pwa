@@ -3,8 +3,6 @@
 }
 .a2hs::before{
     content:'+';
-    font-size: 4rem;
-    line-height: 2rem;
 }
 .a2hs.show-pwa{
     /*When criteria are met*/
