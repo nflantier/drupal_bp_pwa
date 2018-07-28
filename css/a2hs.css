@@ -1,7 +1,7 @@
 .a2hs{
     /*When criteria are not met*/
 }
-.a2hs::before{
+.a2hs i::before{
     content:'+';
 }
 .a2hs.show-pwa{
