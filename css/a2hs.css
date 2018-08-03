@@ -1,15 +1,16 @@
 .a2hs{
     /*When criteria are not met*/
+    overflow:hidden;
 }
 .a2hs i::before{
-    content:'+';
+    content:'+';                    
 }
 .a2hs.show-pwa{
     /*When criteria are met*/
 }
 @media all and (display-mode: standalone) {
     .a2hs{
-        display: none !important;
+        display: none !important;   
     }
     .a2hs.show-pwa{
         display: none !important;
