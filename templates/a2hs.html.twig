@@ -3,8 +3,12 @@
     'a2hs',
   ]
 %}
+
+{% if prefix %}
+  <div class="a2hs-prefix">{{ prefix }}</div>
+{% endif %}
 <button {{ attributes.addClass(classes) }}>
     <i></i>
-    <span>Ajouter au burreau</span>
+    <span>{{text}}</span>
 </button>
 {{ attach_library('service_worker/a2hs') }}

@@ -27,7 +27,10 @@ function service_worker_preprocess_html(&$variables) {
 function service_worker_theme(){
   return array(
     'a2hs' => array(
-      'variables' => array(),
+      'variables' => array(
+        'prefix' => NULL,
+        'text' => 'Ajouter au burreau'
+      ),
       'template' => 'a2hs',
     ),
   );

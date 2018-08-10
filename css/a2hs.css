@@ -15,4 +15,7 @@
     .a2hs.show-pwa{
         display: none !important;
     }
+    .a2hs-prefix{
+        display: none !important;
+    }
 }
