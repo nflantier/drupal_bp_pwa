@@ -1,6 +1,6 @@
-(function ( Drupal, drupalSettings) {
+(function (Drupal, drupalSettings) {
     Drupal.behaviors.registerSW = {
-        attach: function attach(context) {
+        attach: function attach(context, settings) {
             if (navigator && 'serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
                     try{

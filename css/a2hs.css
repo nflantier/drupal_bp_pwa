@@ -3,7 +3,7 @@
     overflow:hidden;
 }
 .a2hs i::before{
-    content:'+';                    
+    content:'+';
 }
 .a2hs.show-pwa{
     /*When criteria are met*/
