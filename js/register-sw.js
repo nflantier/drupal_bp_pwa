@@ -8,8 +8,6 @@
                     }catch(err){
                         console.log('SW registration failed')
                     }
-                    //.then(registration => console.log('Service Worker registered'))
-                    //.catch(err => 'SW registration failed')
                 });
             }
         }
