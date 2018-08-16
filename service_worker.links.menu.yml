@@ -2,5 +2,5 @@ service_worker.settings:
   title: 'PWA & SW settings'
   description: 'PWA & SW settings'
   parent: system.admin_config_development
-  route_name: service_worker.swsettings
+  route_name: service_worker.sw_settings
   weight: 100

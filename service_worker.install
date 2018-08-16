@@ -1,0 +1,80 @@
+<?php
+use Drupal\Core\Database\Database;
+
+function service_worker_uninstall() {
+    // Delete remaining general module variables.
+    \Drupal::state()->delete('service_worker_subscriptions');
+  }
+  
+function service_worker_schema() {
+    $schema['service_worker_subscriptions'] = [
+        'description' => 'The base table for storing browser subscription details',
+        'fields' => [
+        'id' => [
+            'type' => 'serial',
+            'unsigned' => TRUE,
+            'not null' => TRUE,
+            'description' => "The id for the table that is autoincremental id.",
+        ],
+        'subscription_data' => [
+            'description' => 'Store authorization details and crypto key.',
+            'type' => 'text',
+            'size' => 'normal',
+            'not null' => TRUE,
+        ],
+        'subscription_endpoint' => [
+            'description' => 'Stores browser subscription endpoint.',
+            'type' => 'text',
+            'size' => 'normal',
+            'not null' => TRUE,
+        ],
+        'registered_on' => [
+            'description' => 'Time when an ID is registered.',
+            'type' => 'int',
+            'size' => 'normal',
+            'not null' => TRUE,
+        ],
+        ],
+        'primary key' => ['id'],
+    ];
+    return $schema;
+}
+
+function service_worker_update_1101(){
+    
+    $schema = Database::getConnection()->schema();
+    // Create database table.
+    if (!$schema->tableExists('service_worker_subscriptions')) {
+        $schema->createTable('service_worker_subscriptions', [
+            'description' => 'The base table for storing browser subscription details',
+            'fields' => [
+            'id' => [
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'description' => "The id for the table that is autoincremental id.",
+            ],
+            'subscription_data' => [
+                'description' => 'Store authorization details and crypto key.',
+                'type' => 'text',
+                'size' => 'normal',
+                'not null' => TRUE,
+            ],
+            'subscription_endpoint' => [
+                'description' => 'Stores browser subscription endpoint.',
+                'type' => 'text',
+                'size' => 'normal',
+                'not null' => TRUE,
+            ],
+            'registered_on' => [
+                'description' => 'Time when an ID is registered.',
+                'type' => 'int',
+                'size' => 'normal',
+                'not null' => TRUE,
+            ],
+            ],
+            'primary key' => ['id'],
+        ]);
+        return "Subscriptions table created.";
+    }
+}

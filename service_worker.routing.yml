@@ -1,7 +1,27 @@
-service_worker.swsettings:
-  path: '/admin/config/swsettings'
+service_worker.send_notification:
+  path: '/admin/config/send_notification'
+  defaults:
+    _form: '\Drupal\service_worker\Form\PushNotificationForm'
+    _title: 'Send Push Notification'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+service_worker.sw_settings:
+  path: '/admin/config/sw_settings'
   defaults:
     _form: '\Drupal\service_worker\Form\ServiceWorkerFormSettings'
     _title: 'PWA & SW settings'
   requirements:
     _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+service_worker.subscribe:
+  path: '/subscribe'
+  defaults:
+    _controller: '\Drupal\service_worker\Controller\PushNotificationController::subscribe'
+  requirements:
+  # Anomynous user can also subscribe for browser push notification    
+    _access: 'TRUE'

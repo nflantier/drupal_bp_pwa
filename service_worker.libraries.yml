@@ -11,3 +11,10 @@ register-sw:
   dependencies:
     - core/drupal
     - core/drupalSettings
+    
+push-notifications:
+  js:
+    js/push.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

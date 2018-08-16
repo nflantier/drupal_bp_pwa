@@ -1,0 +1,10 @@
+
+service_worker.sw_settings:
+  route_name: service_worker.sw_settings
+  base_route: service_worker.sw_settings
+  title: 'PWA & SW settings'
+  
+service_worker.send_notification:
+  route_name: service_worker.send_notification
+  base_route: service_worker.sw_settings
+  title: 'Send Push Notifications'
