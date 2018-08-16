@@ -1,0 +1,11 @@
+{
+    "name": "nflantier/service_worker",
+    "description": "Service worker and PWA functionalities",
+    "type": "drupal-module",
+    "license": "GPL-2.0+",
+    "minimum-stability": "dev",
+    "require": {
+        "minishlink/web-push": "^1.4"
+    }
+}
+
