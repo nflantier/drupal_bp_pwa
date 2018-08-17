@@ -5,7 +5,7 @@
     "license": "GPL-2.0+",
     "minimum-stability": "dev",
     "require": {
-        "minishlink/web-push": "^1.4"
+        "minishlink/web-push": "^4.0"
     }
 }
 
