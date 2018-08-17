@@ -9,10 +9,12 @@ service_worker_page_attachments_alter(&$variables) {
 function service_worker_preprocess_html(&$variables) {
   $variables['#attached']['drupalSettings']['service_worker']['filename']  = \Drupal::config('service_worker.settings')->get('filename');
   $variables['#attached']['library'][] = 'service_worker/register-sw';
-  $variables['#attached']['library'][] = 'service_worker/a2hs';  
-  
+  $variables['#attached']['library'][] = 'service_worker/a2hs';
+
   $push_enabled = \Drupal::config('service_worker.settings')->get('enable_push_notifications');
+
   if( $push_enabled == true || $push_enabled == 1 ){
+    $variables['#attached']['drupalSettings']['service_worker']['force_resubscription']  = false;
     $variables['#attached']['drupalSettings']['service_worker']['ask_push_method']  = 'direct';
     $vid = \Drupal::config('service_worker.settings')->get('vapid_public_key');
     $variables['#attached']['drupalSettings']['service_worker']['vapid_public_key'] = $vid;

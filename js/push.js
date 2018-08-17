@@ -2,6 +2,7 @@
     'use strict';
     var public_key = drupalSettings.service_worker.vapid_public_key;
     var askpushmethod = drupalSettings.service_worker.ask_push_method;
+    var forceresubscription = drupalSettings.service_worker.force_resubscription
     Drupal.behaviors.handlePushNotification = {
         attach: function (context, settings) {
             var applicationServerKey = public_key;
@@ -41,11 +42,22 @@
                 return outputArray;
             }
 
+            function equal (ar1, ar2)
+            {
+                if (ar1.length != ar2.length) return false;
+                for (var i = 0 ; i != ar1.byteLength ; i++)
+                {
+                    if (ar1[i] != ar2[i]) return false;
+                }
+                return true;
+            }
 
 
 
 
-            navigator.serviceWorker.ready.then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
+            navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
+                return serviceWorkerRegistration.pushManager.getSubscription()
+            })
             .then(subscription => {
                 if (!subscription) {
                         // We aren't subscribed to push, so enable subscription.
@@ -61,6 +73,12 @@
                     }else{
                         push_updateSubscription();
                     }
+                }else if(forceresubscription){
+                    console.log("Forcing resubscription ( manually )")
+                    push_updateSubscription(forceresubscription);
+                }else if( !equal( urlBase64ToUint8Array(applicationServerKey) , new Uint8Array(subscription.options.applicationServerKey, 0, 65) ) ){
+                    console.log("Forcing resubscription ( key missmatch )")
+                    push_updateSubscription(true);
                 }
             })
             .then(subscription => subscription)
@@ -71,8 +89,22 @@
 
 
 
+            function push_resubscribe(){
+                navigator.serviceWorker.ready.then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
+                .then(
+                    subscription => 
+                    subscription.unsubscribe()
+                    .then(success => {
+                        console.log(`Unsubbing success ${success}`)
+                        push_subscribe()})
+                )
+                return;
+            }
 
-            function push_updateSubscription() {
+            function push_updateSubscription(resubing = false) {
+                if(resubing)
+                    push_resubscribe()
+
                 navigator.serviceWorker.ready.then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
                 .then(subscription => {
                   if (!subscription) {
@@ -94,16 +126,20 @@
             
             function push_subscribe() {
                 navigator.serviceWorker.ready
-                .then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: urlBase64ToUint8Array(applicationServerKey)
-                }))
+                .then(serviceWorkerRegistration => {
+                    return serviceWorkerRegistration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(applicationServerKey)
+                    })
+                })
                 .then(subscription => {
                     // Subscription was successful
                     // create subscription on your server.
                     return push_sendSubscriptionToServer(subscription, 'POST');
                 })
-                .then(subscription => subscription )
+                .then(subscription => {
+                    return subscription 
+                })
                 .catch(e => {
                     if (Notification.permission === 'denied') {
                             // The user denied the notification permission which
@@ -140,7 +176,7 @@
                     })
                 })
                 .then((resp) => resp.json())
-                .then(function (data) {})
+                .then(data => data)
                 .catch(function (err) {});
             }
         }

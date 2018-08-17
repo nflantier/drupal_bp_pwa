@@ -3,4 +3,4 @@ manifestfilename: 'manifest'
 themecolor: '#ffffff'
 vapid_public_key: ''
 vapid_private_key: ''
-enable_push_notifications: TRUE
+enable_push_notifications: FALSE

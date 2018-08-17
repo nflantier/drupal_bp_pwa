@@ -54,22 +54,22 @@ class SubscriptionsData {
    */
   public static function sendNotificationStart(array $subscriptionsData, $notification_data) {
     if (!empty($subscriptionsData) && !empty($notification_data)) {
+      $vapid_public_key = \Drupal::config('service_worker.settings')->get('vapid_public_key');
+      $vapid_private_key = \Drupal::config('service_worker.settings')->get('vapid_private_key');
+      $auth = [
+        'VAPID' => [
+          'subject' => 'https://github.com/Minishlink/web-push-php-example/',
+          'publicKey' => $vapid_public_key,
+          'privateKey' => $vapid_private_key,
+        ],
+      ];
+      $webPush = new WebPush($auth);
       foreach ($subscriptionsData as $subscription) {
         $subscription_data = unserialize($subscription->subscription_data);
         $subscription_endpoint = $subscription->subscription_endpoint;
         $key = $subscription_data['key'];
         $token = $subscription_data['token'];
-        $vapid_public_key = \Drupal::config('service_worker.settings')->get('vapid_public_key');
-        $vapid_private_key = \Drupal::config('service_worker.settings')->get('vapid_private_key');
         if (!empty($key) && !empty($token) && !empty($subscription_endpoint)) {
-          $auth = [
-            'VAPID' => [
-              'subject' => 'https://github.com/Minishlink/web-push-php-example/',
-              'publicKey' => $vapid_public_key,
-              'privateKey' => $vapid_private_key,
-            ],
-          ];
-          $webPush = new WebPush($auth);
           $webPush->sendNotification(
             new Subscription($subscription_endpoint, $key, $token),
             $notification_data,
