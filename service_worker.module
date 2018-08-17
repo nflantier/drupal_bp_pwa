@@ -13,6 +13,7 @@ function service_worker_preprocess_html(&$variables) {
   
   $push_enabled = \Drupal::config('service_worker.settings')->get('enable_push_notifications');
   if( $push_enabled == true || $push_enabled == 1 ){
+    $variables['#attached']['drupalSettings']['service_worker']['ask_push_method']  = 'direct';
     $vid = \Drupal::config('service_worker.settings')->get('vapid_public_key');
     $variables['#attached']['drupalSettings']['service_worker']['vapid_public_key'] = $vid;
     if (!empty($vid)) {

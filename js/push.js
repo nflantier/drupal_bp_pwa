@@ -1,20 +1,7 @@
-//service worker ready
-//then serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription()
-//if pas de subscription
-    //update subscription
-    /*serviceWorkerRegistration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(applicationServerKey)
-    }))*/
-    //return send subscription to server
-        //fetch to 91../subscribe JSON format endpoint key token
-        /*
-                SERVER STORE USER AND CREDS
-        */
-
 (function ($, Drupal, drupalSettings) {
     'use strict';
     var public_key = drupalSettings.service_worker.vapid_public_key;
+    var askpushmethod = drupalSettings.service_worker.ask_push_method;
     Drupal.behaviors.handlePushNotification = {
         attach: function (context, settings) {
             var applicationServerKey = public_key;
@@ -64,8 +51,16 @@
                         // We aren't subscribed to push, so enable subscription.
                         // return;.
                         //for now automatic subscription
-                    if(confirm("Subscribe to push ?"))
+                    if(askpushmethod == "confirmdialog"){
+                        if(confirm("Subscribe to push ?"))
+                            push_updateSubscription();
+                    }else if(askpushmethod == "eventclick"){
+                         window.addEventListener('askPushMethod', function (e) {
+                            push_updateSubscription();
+                         });
+                    }else{
                         push_updateSubscription();
+                    }
                 }
             })
             .then(subscription => subscription)
