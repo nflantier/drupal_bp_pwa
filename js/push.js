@@ -163,10 +163,6 @@
             function push_sendSubscriptionToServer(subscription, method) {
                 const key = subscription.getKey('p256dh');
                 const token = subscription.getKey('auth');
-                console.log("key", key)
-                console.log("token", token)
-                console.log("key-2", btoa(String.fromCharCode.apply(null, new Uint8Array(key))))
-                console.log("token-2", btoa(String.fromCharCode.apply(null, new Uint8Array(token))))
                 return fetch('/subscribe', {
                     method,
                     body: JSON.stringify({
