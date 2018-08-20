@@ -72,14 +72,17 @@
                         console.log("Forcing resubscription ( key missmatch )")
                         return push_updateSubscription(true)
                     }
-                    //console.log('push', subscription)
+                    return subscription
                 })
-                .then(subscription => subscription)
+                .then( subscription => {
+                    console.log("push",subscription)
+                    console.log("appserverkey", applicationServerKey)
+                    return subscription
+                } )
                 .catch(e => {
                     // console.error('Error when updating the subscription', e);
                 });
             }
-            push_init(askpushmethod)
 
             $(window).on(window.SW_PUSH_EVENT.unsubPush, function (e) {
                 //console.log('push', 'event unsub triggered')
@@ -152,13 +155,18 @@
                         endpoint: subscription.endpoint
                     })
                 })
-                .then(resp => subscription)
+                .then( resp => resp.json() )
+                .then( data => subscription )
                 .catch(function (err) {});
             }
             
             function push_sendSubscriptionToServer(subscription, method) {
                 const key = subscription.getKey('p256dh');
                 const token = subscription.getKey('auth');
+                console.log("key", key)
+                console.log("token", token)
+                console.log("key-2", btoa(String.fromCharCode.apply(null, new Uint8Array(key))))
+                console.log("token-2", btoa(String.fromCharCode.apply(null, new Uint8Array(token))))
                 return fetch('/subscribe', {
                     method,
                     body: JSON.stringify({
@@ -167,9 +175,13 @@
                         token: token ? btoa(String.fromCharCode.apply(null, new Uint8Array(token))) : null
                     })
                 })
-                .then(resp => subscription)
+                .then( resp => resp.json() ) // Transform the data into json.
+                .then( data => subscription )
                 .catch(function (err) {});
             }
+
+            push_init(askpushmethod)
+            //push_unsubscribe()
         }
     }
 })(jQuery, Drupal, drupalSettings);
