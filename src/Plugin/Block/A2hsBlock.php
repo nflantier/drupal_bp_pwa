@@ -9,7 +9,7 @@ use Drupal\Core\Block\BlockBase;
  * @Block(
  *   id = "pwa_add_to_homescreen",
  *   admin_label = @Translation("A2HS block"),
- *   category = @Translation("A2HS"),
+ *   category = @Translation("PWA"),
  * )
  */
 class A2hsBlock extends BlockBase {
