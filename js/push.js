@@ -75,8 +75,8 @@
                     return subscription
                 })
                 .then( subscription => {
-                    console.log("push",subscription)
-                    console.log("appserverkey", applicationServerKey)
+                    //console.log("push",subscription)
+                    //console.log("appserverkey", applicationServerKey)
                     return subscription
                 } )
                 .catch(e => {
