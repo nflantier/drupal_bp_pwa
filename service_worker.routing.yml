@@ -23,5 +23,11 @@ service_worker.subscribe:
   defaults:
     _controller: '\Drupal\service_worker\Controller\PushNotificationController::subscribe'
   requirements:
-  # Anomynous user can also subscribe for browser push notification    
+    _access: 'TRUE'
+    
+service_worker.unsubscribe:
+  path: '/unsubscribe'
+  defaults:
+    _controller: '\Drupal\service_worker\Controller\PushNotificationController::unsubscribe'
+  requirements:
     _access: 'TRUE'

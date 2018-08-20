@@ -15,7 +15,7 @@ function service_worker_preprocess_html(&$variables) {
 
   if( $push_enabled == true || $push_enabled == 1 ){
     $variables['#attached']['drupalSettings']['service_worker']['force_resubscription']  = false;
-    $variables['#attached']['drupalSettings']['service_worker']['ask_push_method']  = 'direct';
+    $variables['#attached']['drupalSettings']['service_worker']['ask_push_method']  = 'fromjsevent';
     $vid = \Drupal::config('service_worker.settings')->get('vapid_public_key');
     $variables['#attached']['drupalSettings']['service_worker']['vapid_public_key'] = $vid;
     if (!empty($vid)) {
@@ -51,6 +51,13 @@ function service_worker_theme(){
         'text' => 'Ajouter au burreau'
       ),
       'template' => 'a2hs',
+    ),
+    'pushnotifications' => array(
+      'variables' => array(
+        'prefix' => "...",
+        'text' => '...'
+      ),
+      'template' => 'pushnotifications',
     ),
   );
 }

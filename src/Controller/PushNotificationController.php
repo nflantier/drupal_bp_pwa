@@ -9,31 +9,21 @@ use Drupal\Core\Database\Connection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\service_worker\Model\SubscriptionsData;
 
-/**
- * Controller routines for Browser push notification.
- */
+
 class PushNotificationController extends ControllerBase {
 
   protected $database;
 
-  /**
-   * {@inheritdoc}
-   */
   public static function create(ContainerInterface $container) {
     return new static(
         $container->get('database')
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function __construct(Connection $database) {
     $this->database = $database;
   }
-  /**
-   * This event will be triggered when user subscribe for notification.
-   */
+  
   public function subscribe(Request $request) {
     if ($request) {
       $data = json_decode($request->getContent(), TRUE);
@@ -45,6 +35,16 @@ class PushNotificationController extends ControllerBase {
     }
   }
 
+  public function unsubscribe(Request $request) {
+    if ($request) {
+      $data = json_decode($request->getContent(), TRUE);
+      if(!empty($data['endpoint'])){
+        $entry['subscription_endpoint'] = $data['endpoint'];
+        $number_of_unsub = SubscriptionsData::delete($entry);
+      }
+      return new JsonResponse([$data]);
+    }
+  }
   
   public function subscriptionList() {
     // The table description.

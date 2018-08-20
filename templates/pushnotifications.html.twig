@@ -1,0 +1,8 @@
+{%
+  set btclasses = [
+    'bt-notifications',
+  ]
+%}
+<span class="state-notifications">{{prefix}}</span>
+<button {{ attributes.addClass(btclasses) }}>{{text}}</button>
+{{ attach_library('service_worker/push-notifications-block') }}

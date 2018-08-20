@@ -3,6 +3,8 @@
     var public_key = drupalSettings.service_worker.vapid_public_key;
     var askpushmethod = drupalSettings.service_worker.ask_push_method;
     var forceresubscription = drupalSettings.service_worker.force_resubscription
+    window.SW_PUSH_EVENT = {subPush : 'subPush', unsubPush : 'unsubPush'}
+
     Drupal.behaviors.handlePushNotification = {
         attach: function (context, settings) {
             var applicationServerKey = public_key;
@@ -42,131 +44,121 @@
                 return outputArray;
             }
 
-            function equal (ar1, ar2)
-            {
+            function equal (ar1, ar2){
                 if (ar1.length != ar2.length) return false;
-                for (var i = 0 ; i != ar1.byteLength ; i++)
-                {
+                for (var i = 0 ; i != ar1.byteLength ; i++){
                     if (ar1[i] != ar2[i]) return false;
                 }
                 return true;
             }
 
-
-
-
-            navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
-                return serviceWorkerRegistration.pushManager.getSubscription()
-            })
-            .then(subscription => {
-                if (!subscription) {
-                        // We aren't subscribed to push, so enable subscription.
-                        // return;.
-                        //for now automatic subscription
-                    if(askpushmethod == "confirmdialog"){
-                        if(confirm("Subscribe to push ?"))
-                            push_updateSubscription();
-                    }else if(askpushmethod == "eventclick"){
-                         window.addEventListener('askPushMethod', function (e) {
-                            push_updateSubscription();
-                         });
-                    }else{
-                        push_updateSubscription();
-                    }
-                }else if(forceresubscription){
-                    console.log("Forcing resubscription ( manually )")
-                    push_updateSubscription(forceresubscription);
-                }else if( !equal( urlBase64ToUint8Array(applicationServerKey) , new Uint8Array(subscription.options.applicationServerKey, 0, 65) ) ){
-                    console.log("Forcing resubscription ( key missmatch )")
-                    push_updateSubscription(true);
-                }
-            })
-            .then(subscription => subscription)
-            .catch(e => {
-                // console.error('Error when updating the subscription', e);
-            });
-      
-
-
-
-            function push_resubscribe(){
-                navigator.serviceWorker.ready.then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
-                .then(
-                    subscription => 
-                    subscription.unsubscribe()
-                    .then(success => {
-                        console.log(`Unsubbing success ${success}`)
-                        push_subscribe()})
-                )
-                return;
-            }
-
-            function push_updateSubscription(resubing = false) {
-                if(resubing)
-                    push_resubscribe()
-
-                navigator.serviceWorker.ready.then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
+            function push_init(method){
+                return navigator.serviceWorker.ready
+                .then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
                 .then(subscription => {
-                  if (!subscription) {
-                        // We aren't subscribed to push, so enable subscription.
-                    push_subscribe();
-                    return;
-                  }
-                  // Return push_sendSubscriptionToServer(subscription, 'PUT');.
+                    //console.log('push', subscription)
+                    //console.log('push', method)
+                    if (!subscription) {
+                        if(method == "fromconfirmdialog"){
+                            if(confirm("Subscribe to push ?"))
+                                return push_updateSubscription()
+                        }else if(method == "fromloading" || method == "fromevent"){
+                            return push_updateSubscription()
+                        }
+                    }else if(forceresubscription){
+                        console.log("Forcing resubscription ( manually )")
+                        return push_updateSubscription(true)
+                    }else if(subscription && !equal( urlBase64ToUint8Array(applicationServerKey) , new Uint8Array(subscription.options.applicationServerKey, 0, 65) ) ){
+                        console.log("Forcing resubscription ( key missmatch )")
+                        return push_updateSubscription(true)
+                    }
+                    //console.log('push', subscription)
                 })
-                .then(subscription => subscription) // Set your UI to show they have subscribed for push messages.
+                .then(subscription => subscription)
                 .catch(e => {
                     // console.error('Error when updating the subscription', e);
                 });
             }
+            push_init(askpushmethod)
 
-
-
-
+            $(window).on(window.SW_PUSH_EVENT.unsubPush, function (e) {
+                //console.log('push', 'event unsub triggered')
+                push_unsubscribe()
+                .then(unsubsuccess => {
+                    //console.log('push', unsubsuccess)
+                    if(e.callbackEvent)
+                        e.callbackEvent(unsubsuccess)
+                })
+            })
             
+            $(window).on(window.SW_PUSH_EVENT.subPush, function (e) {
+                //console.log('push', 'event sub triggered')
+                push_init('fromevent')
+                .then(subscription => {
+                    if(e.callbackEvent)
+                        e.callbackEvent(subscription)
+                })
+            })
+
+            function push_updateSubscription(resubing = false) {
+                return navigator.serviceWorker.ready
+                .then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
+                .then(subscription => {
+                    if (!subscription)
+                        return push_subscribe()
+                    if(resubing)
+                        return push_resubscribe()
+                })
+                .then(subscription => subscription) // Set your UI to show they have subscribed for push messages.
+                .catch(e => {});
+            }
+
+
+            function push_unsubscribe(){
+                return navigator.serviceWorker.ready
+                .then( serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription() )
+                .then( subscription => push_sendUnSubscriptionToServer(subscription, 'POST') )
+                .then( subscription => subscription.unsubscribe() , subscription => false)
+                .catch(e => false)
+            }
+            function push_resubscribe(){
+                return push_unsubscribe()
+                .then(success => {
+                        console.log(`Unsubbing success ? ${success}`)
+                        return push_subscribe()
+                    }
+                )
+            }
             function push_subscribe() {
-                navigator.serviceWorker.ready
-                .then(serviceWorkerRegistration => {
-                    return serviceWorkerRegistration.pushManager.subscribe({
+                return navigator.serviceWorker.ready
+                .then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager
+                    .subscribe({
                         userVisibleOnly: true,
                         applicationServerKey: urlBase64ToUint8Array(applicationServerKey)
                     })
-                })
-                .then(subscription => {
-                    // Subscription was successful
-                    // create subscription on your server.
-                    return push_sendSubscriptionToServer(subscription, 'POST');
-                })
-                .then(subscription => {
-                    return subscription 
-                })
+                )
+                .then(subscription => push_sendSubscriptionToServer(subscription, 'POST'))
                 .catch(e => {
-                    if (Notification.permission === 'denied') {
-                            // The user denied the notification permission which
-                            // means we failed to subscribe and the user will need
-                            // to manually change the notification permission to
-                            // subscribe to push messages.
-                            // console.warn('Notifications are denied by the user.');
-                    }
-                    else {
-                            // A problem occurred with the subscription; common reasons
-                            // include network errors or the user skipped the permission.
-                            // console.error('Impossible to subscribe to push notifications', e);
-                            // changePushButtonState('disabled');.
-                    }
+                    if (Notification.permission === 'denied') {} else {}
                 });
             }
 
 
 
-
+            function push_sendUnSubscriptionToServer(subscription, method) {
+                return fetch('/unsubscribe', {
+                    method,
+                    body: JSON.stringify({
+                        endpoint: subscription.endpoint
+                    })
+                })
+                .then(resp => subscription)
+                .catch(function (err) {});
+            }
             
             function push_sendSubscriptionToServer(subscription, method) {
                 const key = subscription.getKey('p256dh');
                 const token = subscription.getKey('auth');
-                // console.log(btoa(String.fromCharCode.apply(null, new Uint8Array(key))));
-                // console.log( btoa(String.fromCharCode.apply(null, new Uint8Array(token))));
-                // console.log(subscription.endpoint);
                 return fetch('/subscribe', {
                     method,
                     body: JSON.stringify({
@@ -175,8 +167,7 @@
                         token: token ? btoa(String.fromCharCode.apply(null, new Uint8Array(token))) : null
                     })
                 })
-                .then((resp) => resp.json())
-                .then(data => data)
+                .then(resp => subscription)
                 .catch(function (err) {});
             }
         }

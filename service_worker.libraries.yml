@@ -18,3 +18,9 @@ push-notifications:
   dependencies:
     - core/jquery
     - core/drupal
+        
+push-notifications-block:
+  js:
+    js/push-block.js: {}
+  dependencies:
+    - service_worker/push-notifications

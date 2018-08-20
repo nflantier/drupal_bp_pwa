@@ -35,6 +35,21 @@ class SubscriptionsData {
     return $return_value;
   }
 
+  public static function delete(array $entry, Database $database = null ) {
+    $connection = Database::getConnection();
+    $number_of_delete = 0;
+    try {
+      $number_of_delete = $connection->delete(self::$subscriptionsTable)
+        ->condition('subscription_endpoint', $entry['subscription_endpoint'], '=')
+        ->execute();
+    }
+    catch (\Exception $e) {
+      drupal_set_message(t('db_delete failed. Message = %message',
+      ['%message' => $e->getMessage()]), 'error');
+    }
+    return $number_of_delete;
+  }
+
   public static function loadAll() {
     // Read all fields from the browser_subscriptions table.
     $connection = Database::getConnection();
