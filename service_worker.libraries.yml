@@ -4,6 +4,8 @@ a2hs:
       css/a2hs.css: {}
   js:
     js/a2hs.js: {}
+  dependencies:
+    - core/jquery
     
 register-sw:
   js:
@@ -18,6 +20,7 @@ push-notifications:
   dependencies:
     - core/jquery
     - core/drupal
+    - core/drupalSettings
         
 push-notifications-block:
   js:
