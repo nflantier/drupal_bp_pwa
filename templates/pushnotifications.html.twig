@@ -6,8 +6,8 @@
 {% if prefix %}
   <div class="state-notifications">{{prefix}}</div>
 {% endif %}
-<button {{ attributes.addClass(btclasses) }}>
+<div {{ attributes.addClass(btclasses) }}>
     <i></i>
-    <span>{{text}}</span>
-</button>
+    <button>{{text}}</button>
+</div>
 {{ attach_library('service_worker/push-notifications-block') }}

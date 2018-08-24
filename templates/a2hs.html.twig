@@ -7,8 +7,8 @@
 {% if prefix %}
   <div class="state-a2hs">{{ prefix }}</div>
 {% endif %}
-<button {{ attributes.addClass(classes) }}>
+<div {{ attributes.addClass(classes) }}>
     <i></i>
-    <span>{{text}}</span>
-</button>
+    <button>{{text}}</button>
+</div>
 {{ attach_library('service_worker/a2hs') }}
