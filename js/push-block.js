@@ -20,7 +20,7 @@
             }
             var state_notifications = document.querySelectorAll(".state-notifications");
             var bt_notifications = document.querySelectorAll(".bt-notifications");
-            var bt_notifications_span = bt_notifications.querySelectorAll("span");
+            var bt_notifications_span = document.querySelectorAll(".bt-notifications span");
 
             var inner = function inner(val, elems) {
                 return elems.forEach(function (element) {
