@@ -20,6 +20,7 @@
             }
             var state_notifications = document.querySelectorAll(".state-notifications");
             var bt_notifications = document.querySelectorAll(".bt-notifications");
+            var bt_notifications_span = bt_notifications.querySelectorAll("span");
 
             var inner = function inner(val, elems) {
                 return elems.forEach(function (element) {
@@ -37,11 +38,11 @@
                         }
                         if (!subscription) {
                             var _e = createpushevent(window.SW_PUSH_EVENT.subPush, function (subscription) {
-                                if (subscription) inner("Se désabonner des notifications", bt_notifications.querySelectorAll('span'));
+                                if (subscription) inner("Se désabonner des notifications", bt_notifications_span);
                             });
                         } else {
                             var _e2 = createpushevent(window.SW_PUSH_EVENT.unsubPush, function (unsubsuccess) {
-                                if (unsubsuccess) inner("S' abonner aux notifications", bt_notifications.querySelectorAll('span'));
+                                if (unsubsuccess) inner("S' abonner aux notifications", bt_notifications_span);
                             });
                         }
                     });
@@ -50,7 +51,7 @@
 
             if (Notification.permission === 'denied') {
                 inner('Les notifications sont bloquées', state_notifications);
-                inner("Autoriser les notifications", bt_notifications);
+                inner("Autoriser les notifications", bt_notifications_span);
                 return;
             }
             if (Notification.permission === 'granted') {
@@ -62,7 +63,7 @@
             navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
                 return serviceWorkerRegistration.pushManager.getSubscription();
             }).then(function (subscription) {
-                if (!subscription) inner("S' abonner aux notifications", bt_notifications);else inner("Se désabonner des notifications", bt_notifications);
+                if (!subscription) inner("S' abonner aux notifications", bt_notifications_span);else inner("Se désabonner des notifications", bt_notifications_span);
             });
 
             function createpushevent(eventName, callback) {
