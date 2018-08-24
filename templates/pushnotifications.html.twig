@@ -3,6 +3,11 @@
     'bt-notifications',
   ]
 %}
-<span class="state-notifications">{{prefix}}</span>
-<button {{ attributes.addClass(btclasses) }}>{{text}}</button>
+{% if prefix %}
+  <div class="state-notifications">{{prefix}}</div>
+{% endif %}
+<button {{ attributes.addClass(btclasses) }}>
+    <i></i>
+    <span>{{text}}</span>
+</button>
 {{ attach_library('service_worker/push-notifications-block') }}
