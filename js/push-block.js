@@ -37,11 +37,11 @@
                         }
                         if (!subscription) {
                             var _e = createpushevent(window.SW_PUSH_EVENT.subPush, function (subscription) {
-                                if (subscription) inner("Se désabonner des notifications", bt_notifications);
+                                if (subscription) inner("Se désabonner des notifications", bt_notifications.querySelectorAll('span'));
                             });
                         } else {
                             var _e2 = createpushevent(window.SW_PUSH_EVENT.unsubPush, function (unsubsuccess) {
-                                if (unsubsuccess) inner("S' abonner aux notifications", bt_notifications);
+                                if (unsubsuccess) inner("S' abonner aux notifications", bt_notifications.querySelectorAll('span'));
                             });
                         }
                     });
